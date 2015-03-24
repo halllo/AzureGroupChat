@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFServer", "WPFServer\WPFS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETServer", "ASPNETServer\ASPNETServer.csproj", "{2A27F557-84BA-473E-A43A-C381684F9A01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSChat", "VSChat\VSChat.csproj", "{9F9795FA-C3BE-4D03-B275-A89035454F28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2A27F557-84BA-473E-A43A-C381684F9A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A27F557-84BA-473E-A43A-C381684F9A01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A27F557-84BA-473E-A43A-C381684F9A01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F9795FA-C3BE-4D03-B275-A89035454F28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F9795FA-C3BE-4D03-B275-A89035454F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F9795FA-C3BE-4D03-B275-A89035454F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F9795FA-C3BE-4D03-B275-A89035454F28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

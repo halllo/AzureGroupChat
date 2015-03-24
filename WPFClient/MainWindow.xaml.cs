@@ -14,9 +14,9 @@ namespace WPFClient
 		public String UserName { get; set; }
 		public IHubProxy HubProxy { get; set; }
 		//const string ServerURI = "http://localhost:8080/signalr";
-		const string ServerURI = "http://localhost:57403/signalr";
+		//const string ServerURI = "http://localhost:57403/signalr";
 		//const string ServerURI = "https://localhost:44300/signalr";
-		//const string ServerURI = "http://manuelnaujoksintegratedchat.azurewebsites.net/signalr";
+		const string ServerURI = "https://manuelnaujoksintegratedchat.azurewebsites.net/signalr";
 		public HubConnection Connection { get; set; }
 
 		public MainWindow()
