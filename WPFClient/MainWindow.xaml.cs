@@ -24,14 +24,14 @@ namespace WPFClient
 			InitializeComponent();
 		}
 
-		private void ButtonSend_Click(object sender, RoutedEventArgs e)
+		void ButtonSend_Click(object sender, RoutedEventArgs e)
 		{
 			HubProxy.Invoke("Send", UserName, GroupName, TextBoxMessage.Text);
 			TextBoxMessage.Text = String.Empty;
 			TextBoxMessage.Focus();
 		}
 
-		private async Task ConnectAsync()
+		async Task ConnectAsync()
 		{
 			Connection = new HubConnection(ServerURI);
 			Connection.Closed += Connection_Closed;
@@ -73,7 +73,7 @@ namespace WPFClient
 			dispatcher.Invoke(() => SignInPanel.Visibility = Visibility.Visible);
 		}
 
-		private async void SignInButton_Click(object sender, RoutedEventArgs e)
+		async void SignInButton_Click(object sender, RoutedEventArgs e)
 		{
 			UserName = UserNameTextBox.Text;
 			GroupName = GroupNameTextBox.Text;
@@ -86,7 +86,7 @@ namespace WPFClient
 			}
 		}
 
-		private void WPFClient_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		void WPFClient_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (Connection != null)
 			{

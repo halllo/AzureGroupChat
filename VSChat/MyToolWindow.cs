@@ -10,11 +10,19 @@ namespace ManuelNaujoks.VSChat
 		public MyToolWindow()
 			: base(null)
 		{
-			this.Caption = Resources.ToolWindowTitle;
-			this.BitmapResourceID = 301;
-			this.BitmapIndex = 1;
+			Caption = Resources.ToolWindowTitle;
+			BitmapResourceID = 301;
+			BitmapIndex = 1;
 
 			base.Content = new MyControl();
+		}
+
+		protected override void OnClose()
+		{
+			var chat = (MyControl)base.Content;
+			chat.Closing();
+
+			base.OnClose();
 		}
 	}
 }

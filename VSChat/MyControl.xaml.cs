@@ -1,35 +1,107 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.AspNet.SignalR.Client;
 
 namespace ManuelNaujoks.VSChat
 {
-    /// <summary>
-    /// Interaction logic for MyControl.xaml
-    /// </summary>
-    public partial class MyControl : UserControl
-    {
-        public MyControl()
-        {
-            InitializeComponent();
-        }
+	public partial class MyControl
+	{
+		public MyControl()
+		{
+			InitializeComponent();
+		}
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
-                            "Group Chat");
 
-        }
-    }
+
+
+
+
+
+
+
+
+		public String GroupName { get; set; }
+		public String UserName { get; set; }
+		public IHubProxy HubProxy { get; set; }
+		public HubConnection Connection { get; set; }
+		//const string ServerURI = "http://localhost:8080/signalr";
+		//const string ServerURI = "http://localhost:57403/signalr";
+		//const string ServerURI = "https://localhost:44300/signalr";
+		const string ServerURI = "https://manuelnaujoksintegratedchat.azurewebsites.net/signalr";
+
+		void ButtonSend_Click(object sender, RoutedEventArgs e)
+		{
+			HubProxy.Invoke("Send", UserName, GroupName, TextBoxMessage.Text);
+			TextBoxMessage.Text = String.Empty;
+			TextBoxMessage.Focus();
+		}
+
+		async Task ConnectAsync()
+		{
+			Connection = new HubConnection(ServerURI);
+			Connection.Closed += Connection_Closed;
+			HubProxy = Connection.CreateHubProxy("MyHub");
+			HubProxy.On<string, string>("AddMessage", (userName, message) =>
+				this.Dispatcher.Invoke(() =>
+				{
+					var postfix = new TextRange(RichTextBoxConsole.Document.ContentEnd, RichTextBoxConsole.Document.ContentEnd) { Text = userName + ": " };
+					postfix.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+
+					var content = new TextRange(RichTextBoxConsole.Document.ContentEnd, RichTextBoxConsole.Document.ContentEnd) { Text = message + "\n" };
+					content.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
+				})
+			);
+
+			try
+			{
+				await Connection.Start();
+			}
+			catch (HttpRequestException)
+			{
+				StatusText.Content = "Unable to connect to server: Start server before connecting clients.";
+				return;
+			}
+
+			SignInPanel.Visibility = Visibility.Collapsed;
+			ChatPanel.Visibility = Visibility.Visible;
+			ButtonSend.IsEnabled = true;
+			TextBoxMessage.Focus();
+			RichTextBoxConsole.AppendText("Connected to server at " + ServerURI + "\r");
+		}
+
+		void Connection_Closed()
+		{
+			var dispatcher = Application.Current.Dispatcher;
+			dispatcher.Invoke(() => ChatPanel.Visibility = Visibility.Collapsed);
+			dispatcher.Invoke(() => ButtonSend.IsEnabled = false);
+			dispatcher.Invoke(() => StatusText.Content = "You have been disconnected.");
+			dispatcher.Invoke(() => SignInPanel.Visibility = Visibility.Visible);
+		}
+
+		async void SignInButton_Click(object sender, RoutedEventArgs e)
+		{
+			UserName = UserNameTextBox.Text;
+			GroupName = GroupNameTextBox.Text;
+			if (!String.IsNullOrEmpty(GroupName) && !String.IsNullOrEmpty(UserName))
+			{
+				StatusText.Visibility = Visibility.Visible;
+				StatusText.Content = "Connecting to server...";
+				await ConnectAsync();
+				HubProxy.Invoke("JoinRoom", UserName, GroupName);
+			}
+		}
+
+		public void Closing()
+		{
+			if (Connection != null)
+			{
+				Connection.Stop();
+				Connection.Dispose();
+			}
+		}
+	}
 }
