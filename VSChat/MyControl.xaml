@@ -27,7 +27,7 @@
 				<Label Content="group name" Grid.Row="0" Grid.Column="1"/>
 				<TextBox x:Name="GroupNameTextBox" Grid.Row="1" Grid.Column="1"/>
 
-				<Button Content="sign In" Click="SignInButton_Click" Grid.Row="1" Grid.Column="2"/>
+				<Button Content="sign In" Click="SignInButton_Click" Grid.Row="1" Grid.Column="2" BorderThickness="0"/>
 
 			</Grid>
 
@@ -35,8 +35,14 @@
 		</StackPanel>
 		<StackPanel x:Name="ChatPanel" Margin="10" MaxWidth="550" Visibility="Collapsed">
 			<Grid>
-				<TextBox x:Name="TextBoxMessage" Height="20" TextWrapping="Wrap" Margin="0,0,80,0"/>
-				<Button x:Name="ButtonSend" Content="send" Width="75" Height="20" Click="ButtonSend_Click" IsDefault="True" IsEnabled="False" HorizontalAlignment="Right"/>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<TextBox x:Name="TextBoxMessage" Height="20" TextWrapping="Wrap"/>
+				<Button Grid.Column="1" Content="send" Click="ButtonSend_Click" x:Name="ButtonSend" Height="20" IsDefault="True" IsEnabled="False" BorderThickness="0"/>
+				<Button Grid.Column="2" Content="file shortcut" Click="ButtonBase_SendShortcut" BorderThickness="0"/>
 			</Grid>
 			<RichTextBox x:Name="RichTextBoxConsole" HorizontalAlignment="Left" Height="461" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,10" IsReadOnly="True">
 				<RichTextBox.Resources>

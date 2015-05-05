@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
+using EnvDTE;
 
 namespace ManuelNaujoks.VSChat
 {
 	[Guid("173cbcde-e728-442c-82ee-1c29ae3e00af")]
-	public class MyToolWindow : ToolWindowPane
+	public class MyToolWindow : SolutionAwareToolWindowPane
 	{
 		public MyToolWindow()
-			: base(null)
 		{
 			Caption = Resources.ToolWindowTitle;
 			BitmapResourceID = 301;
 			BitmapIndex = 1;
 
-			base.Content = new MyControl();
+			base.Content = new MyControl { GetRelativeCodePosition = MakeRelativeCodePosition };
 		}
 
 		protected override void OnClose()
@@ -23,6 +22,33 @@ namespace ManuelNaujoks.VSChat
 			chat.Closing();
 
 			base.OnClose();
+		}
+
+		private void MakeRelativeCodePosition(Action<RelativeCodePosition> callback)
+		{
+			try
+			{
+				var activeDocument = MasterObjekt.ActiveDocument;
+				if (activeDocument != null)
+				{
+					var selection = (TextSelection)activeDocument.Selection;
+					if (selection != null)
+					{
+						if (RawSolution != null)
+						{
+							callback(new RelativeCodePosition
+							{
+								SolutionFile = RawSolution.FileName,
+								File = activeDocument.FullName,
+								Line = selection.AnchorPoint.Line
+							});
+						}
+					}
+				}
+			}
+			catch (Exception)
+			{
+			}
 		}
 	}
 }

@@ -24,6 +24,7 @@ namespace ManuelNaujoks.VSChat
 
 
 
+
 		public String GroupName { get; set; }
 		public String UserName { get; set; }
 		public IHubProxy HubProxy { get; set; }
@@ -38,6 +39,16 @@ namespace ManuelNaujoks.VSChat
 			HubProxy.Invoke("Send", UserName, GroupName, TextBoxMessage.Text);
 			TextBoxMessage.Text = String.Empty;
 			TextBoxMessage.Focus();
+		}
+
+		public Action<Action<RelativeCodePosition>> GetRelativeCodePosition { get; set; }
+		void ButtonBase_SendShortcut(object sender, RoutedEventArgs e)
+		{
+			if (GetRelativeCodePosition != null) GetRelativeCodePosition(p =>
+			{
+				TextBoxMessage.Text += " @" + p.Shortcut;
+				TextBoxMessage.Focus();
+			});
 		}
 
 		async Task ConnectAsync()
