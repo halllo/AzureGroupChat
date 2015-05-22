@@ -17,17 +17,6 @@ namespace ManuelNaujoks.VSChat
 		{
 		}
 
-		//private void ShowToolWindow(object sender, EventArgs e)
-		//{
-		//	ToolWindowPane window = this.FindToolWindow(typeof(MyToolWindow), 0, true);
-		//	if ((null == window) || (null == window.Frame))
-		//	{
-		//		throw new NotSupportedException(Resources.CanNotCreateWindow);
-		//	}
-		//	IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-		//	Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-		//}
-
 		private void CreateMyWindow(object sender, EventArgs e)
 		{
 			for (int i = 0; ; i++)
@@ -56,7 +45,7 @@ namespace ManuelNaujoks.VSChat
 			if (null != mcs)
 			{
 				CommandID toolwndCommandID = new CommandID(GuidList.guidVSChatCmdSet, (int)PkgCmdIDList.cmdidGroupChat);
-				MenuCommand menuToolWin = new MenuCommand(CreateMyWindow/*ShowToolWindow*/, toolwndCommandID);
+				MenuCommand menuToolWin = new MenuCommand(CreateMyWindow, toolwndCommandID);
 				mcs.AddCommand(menuToolWin);
 			}
 		}

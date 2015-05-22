@@ -2,6 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:vschat="clr-namespace:ManuelNaujoks.VSChat;assembly=VSChat"
-        Title="WPF SignalR Client" Height="552" Width="517" MinWidth="517" MinHeight="552" ResizeMode="CanMinimize">
-	<vschat:MyControl x:Name="chat"/>
+        Title="WPF SignalR Client" Height="552" Width="517" ResizeMode="CanResize">
+	<Grid>
+		<vschat:MyControl x:Name="chat"/>
+	</Grid>
 </Window>

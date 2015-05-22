@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Media;
 using Microsoft.AspNet.SignalR.Client;
 
 namespace ManuelNaujoks.VSChat
@@ -46,7 +47,10 @@ namespace ManuelNaujoks.VSChat
 		{
 			if (GetRelativeCodePosition != null) GetRelativeCodePosition(p =>
 			{
-				TextBoxMessage.Text += " @" + p.Shortcut;
+				var selectionStart = TextBoxMessage.SelectionStart;
+				var shortcut = " @" + p.Shortcut + " ";
+				TextBoxMessage.Text = TextBoxMessage.Text.Insert(selectionStart, shortcut);
+				TextBoxMessage.SelectionStart = selectionStart + shortcut.Length;
 				TextBoxMessage.Focus();
 			});
 		}
@@ -57,15 +61,40 @@ namespace ManuelNaujoks.VSChat
 			Connection.Closed += Connection_Closed;
 			HubProxy = Connection.CreateHubProxy("MyHub");
 			HubProxy.On<string, string>("AddMessage", (userName, message) =>
-				this.Dispatcher.Invoke(() =>
+			{
+				var inlines = message.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).SelectMany(s =>
 				{
-					var postfix = new TextRange(RichTextBoxConsole.Document.ContentEnd, RichTextBoxConsole.Document.ContentEnd) { Text = userName + ": " };
-					postfix.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+					if (Regex.IsMatch(s, @"^@.*?:\d*$"))
+					{
+						var link = new Hyperlink();
+						link.Tag = s;
+						link.Inlines.Add(s);
+						link.Click += LinkClicked;
+						return new Inline[]
+						{
+							new Run(" "),
+							link
+						};
+					}
+					else
+					{
+						return new Inline[]
+						{
+							new Run(" "),
+							new Run(s) {Foreground = System.Windows.Media.Brushes.Black}
+						};
+					}
+				}).Skip(1);
 
-					var content = new TextRange(RichTextBoxConsole.Document.ContentEnd, RichTextBoxConsole.Document.ContentEnd) { Text = message + "\n" };
-					content.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
-				})
-			);
+				Dispatcher.Invoke(() =>
+				{
+					var p = new Paragraph();
+					p.Inlines.Add(new Run(userName + ": ") { Foreground = System.Windows.Media.Brushes.DarkGray });
+					p.Inlines.AddRange(inlines);
+					RichTextBoxConsole.Document.Blocks.Add(p);
+					RichTextBoxConsole.ScrollToEnd();
+				});
+			});
 
 			try
 			{
@@ -82,6 +111,12 @@ namespace ManuelNaujoks.VSChat
 			ButtonSend.IsEnabled = true;
 			TextBoxMessage.Focus();
 			RichTextBoxConsole.AppendText("Connected to server at " + ServerURI + "\r");
+		}
+
+		void LinkClicked(object sender, RoutedEventArgs e)
+		{
+			var link = ((Hyperlink)sender).Tag.ToString();
+			MessageBox.Show("clicked " + link, "TODO: jump");
 		}
 
 		void Connection_Closed()

@@ -9,7 +9,11 @@
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
 	<Grid>
-		<StackPanel x:Name="SignInPanel" Margin="10,0" MaxWidth="550">
+		<Grid x:Name="SignInPanel" Margin="10,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition/>
@@ -31,10 +35,14 @@
 
 			</Grid>
 
-			<Label x:Name="StatusText" Visibility="Collapsed" HorizontalAlignment="Center" Margin="0,10"/>
-		</StackPanel>
-		<StackPanel x:Name="ChatPanel" Margin="10" MaxWidth="550" Visibility="Collapsed">
-			<Grid>
+			<Label Grid.Row="1" x:Name="StatusText" Visibility="Collapsed" HorizontalAlignment="Center" Margin="0,10"/>
+		</Grid>
+		<Grid x:Name="ChatPanel" Visibility="Collapsed">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid Margin="10">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
 					<ColumnDefinition Width="Auto"/>
@@ -44,13 +52,13 @@
 				<Button Grid.Column="1" Content="send" Click="ButtonSend_Click" x:Name="ButtonSend" Height="20" IsDefault="True" IsEnabled="False" BorderThickness="0"/>
 				<Button Grid.Column="2" Content="file shortcut" Click="ButtonBase_SendShortcut" BorderThickness="0"/>
 			</Grid>
-			<RichTextBox x:Name="RichTextBoxConsole" HorizontalAlignment="Left" Height="461" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,10" IsReadOnly="True">
+			<RichTextBox Grid.Row="1" x:Name="RichTextBoxConsole" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True" IsDocumentEnabled="True">
 				<RichTextBox.Resources>
 					<Style TargetType="{x:Type Paragraph}">
-						<Setter Property="Margin" Value="2" />
+						<Setter Property="Margin" Value="3" />
 					</Style>
 				</RichTextBox.Resources>
 			</RichTextBox>
-		</StackPanel>
+		</Grid>
 	</Grid>
 </UserControl>
