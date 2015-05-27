@@ -10,7 +10,8 @@ namespace WPFClient
 		{
 			Loaded += (s, e) =>
 			{
-				chat.GetRelativeCodePosition = callback => callback(new RelativeCodePosition { SolutionFile = @"C:\s.sln", File = @"C:\test.txt", Line = 2 });
+				chat.GetRelativeCodePosition = callback => callback(new RelativeCodePosition(solutionFile: @"C:\s.sln", file: @"C:\test.txt", line: 2));
+				chat.GoToFileAndLine = shortcut => MessageBox.Show("goto " + shortcut);
 			};
 		}
 		protected override void OnClosing(CancelEventArgs e)

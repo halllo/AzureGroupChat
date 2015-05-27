@@ -5,14 +5,37 @@ namespace ManuelNaujoks.VSChat
 {
 	public class RelativeCodePosition
 	{
-		public string SolutionFile { get; set; }
-		public string File { get; set; }
-		public int Line { get; set; }
-
-		public string Shortcut
+		public RelativeCodePosition(string solutionFile, string file, int line)
 		{
-			get { return MakeRelativePath(SolutionFile, File) + ":" + Line; }
+			SolutionFile = solutionFile;
+			File = file;
+			Line = line;
+			Shortcut = MakeRelativePath(SolutionFile, File) + ":" + Line;
 		}
+
+		public RelativeCodePosition(string shortcut)
+		{
+			Shortcut = shortcut;
+
+			var splittedLink = shortcut.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+
+			Line = int.Parse(splittedLink[1]);
+		}
+
+		public RelativeCodePosition(string solutionFile, string shortcut)
+		{
+			SolutionFile = solutionFile;
+			Shortcut = shortcut;
+
+			var splittedLink = shortcut.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+			Line = int.Parse(splittedLink[1]);
+			File = Path.Combine(Path.GetDirectoryName(SolutionFile), splittedLink[0]);
+		}
+
+		public string SolutionFile { get; private set; }
+		public string File { get; private set; }
+		public int Line { get; private set; }
+		public string Shortcut { get; private set; }
 
 		//http://stackoverflow.com/a/340454
 		/// <summary>

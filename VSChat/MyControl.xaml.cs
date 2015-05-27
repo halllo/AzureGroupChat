@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using Microsoft.AspNet.SignalR.Client;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ManuelNaujoks.VSChat
 {
@@ -14,6 +16,8 @@ namespace ManuelNaujoks.VSChat
 		public MyControl()
 		{
 			InitializeComponent();
+			UserNameTextBox.Text = Properties.Settings.Default.user;
+			GroupNameTextBox.Text = Properties.Settings.Default.group;
 		}
 
 
@@ -43,6 +47,8 @@ namespace ManuelNaujoks.VSChat
 		}
 
 		public Action<Action<RelativeCodePosition>> GetRelativeCodePosition { get; set; }
+		public Action<string> GoToFileAndLine { get; set; }
+
 		void ButtonBase_SendShortcut(object sender, RoutedEventArgs e)
 		{
 			if (GetRelativeCodePosition != null) GetRelativeCodePosition(p =>
@@ -115,8 +121,15 @@ namespace ManuelNaujoks.VSChat
 
 		void LinkClicked(object sender, RoutedEventArgs e)
 		{
-			var link = ((Hyperlink)sender).Tag.ToString();
-			MessageBox.Show("clicked " + link, "TODO: jump");
+			try
+			{
+				var link = ((Hyperlink)sender).Tag.ToString();
+				if (GoToFileAndLine != null) GoToFileAndLine(link.Substring(1));
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.ToString());
+			}
 		}
 
 		void Connection_Closed()
@@ -134,6 +147,10 @@ namespace ManuelNaujoks.VSChat
 			GroupName = GroupNameTextBox.Text;
 			if (!String.IsNullOrEmpty(GroupName) && !String.IsNullOrEmpty(UserName))
 			{
+				Properties.Settings.Default.user = UserName;
+				Properties.Settings.Default.group = GroupName;
+				Properties.Settings.Default.Save();
+
 				StatusText.Visibility = Visibility.Visible;
 				StatusText.Content = "Connecting to server...";
 				await ConnectAsync();
