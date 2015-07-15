@@ -37,7 +37,8 @@ namespace ManuelNaujoks.VSChat
 		//const string ServerURI = "http://localhost:8080/signalr";
 		//const string ServerURI = "http://localhost:57403/signalr";
 		//const string ServerURI = "https://localhost:44300/signalr";
-		const string ServerURI = "https://manuelnaujoksintegratedchat.azurewebsites.net/signalr";
+		//const string ServerURI = "https://manuelnaujoksintegratedchat.azurewebsites.net/signalr";
+		const string ServerURI = "https://manuelschat.azurewebsites.net/signalr";
 
 		void ButtonSend_Click(object sender, RoutedEventArgs e)
 		{
